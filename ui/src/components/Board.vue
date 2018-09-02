@@ -21,12 +21,20 @@
       Shuffle <i class="fas fa-random"></i>
     </button>
   </div>
-  <transition-group :name="shuffleSpeed" tag="div" class="deck"   style="background-color:black">
-    <div v-for="card in cards" :key="card.id"
-         class="card"
-         :class="suitColor[card.suit]">
+
+
+  <transition-group :name="shuffleSpeed" tag="div" class="deck" style="background-color:black">
+
+    <div  v-for="card in cards" :key="card.id"
+          @mouseover="card.active = true"
+          @mouseleave="card.active = false"
+          @click="card.current = !card.current"
+          class="card"
+          v-bind:class="getClass(card)">
+
       <span class="card__suit card__suit--top">{{ card.suit }}</span>
       <span class="card__number">{{ card.rank }} </span>
+      <span class="card__number">{{ card.image }} </span>
       <span class="card__suit card__suit--bottom">{{ card.suit }}</span>
     </div>
   </transition-group>
@@ -48,6 +56,7 @@
         suits: ['♥','♦','♠','♣'],
         cards: [],
         tiles: [],
+        colors: ["red", "orange", "yellow", "green", "teal", "indigo", "purple", "magenta"],
         errors: [],
         suitColor: {
           '♠': 'black',
@@ -59,6 +68,7 @@
         shuffleTypes: ['Slow', 'Medium', 'Fast'],
         isDeckShuffled: false,
         shuffleCount: 0,
+        myActive: "gamma"
       }
     },
     created() {
@@ -66,6 +76,23 @@
       this.loadTiles();
     },
     methods: {
+      getClass(card) {
+        return {
+          'red': this.suitColor[card.suit]=='red',
+          'black': this.suitColor[card.suit]=='black',
+          "glow" : card.active,
+          "current" : card.current,
+          "rainbow-red" : card.color == "red",
+          "rainbow-orange" : card.color == "orange",
+          "rainbow-yellow" : card.color == "yellow",
+          "rainbow-green" : card.color == "green",
+          "rainbow-teal" : card.color == "teal",
+          "rainbow-indigo" : card.color == "indigo",
+          "rainbow-purple" : card.color == "purple",
+          "rainbow-magenta" : card.color == "magenta",
+
+          };
+      },
       loadTiles() {
         axios.get(`http://localhost:4000/api/tiles`)
         .then(response => {
@@ -76,8 +103,13 @@
             let card = {
               id: "tile" + this.tiles[i].id,
               rank: this.tiles[i].name,
-              suit: this.tiles[i].hash
+              image: this.tiles[i].tileimage,
+              suit: this.tiles[i].hash,
+              active: false,
+              color: this.colors[i%8]
             }
+
+            console.log(this.tiles[i]);
             this.cards.push(card);
           }
         })
@@ -89,13 +121,16 @@
       displayInitialDeck() {
         let id = 1;
         this.cards = [];
-
+        var count = 0;
         for( let s = 0; s < this.suits.length; s++ ) {
           for( let r = 0; r < this.ranks.length; r++ ) {
+            count++;
             let card = {
               id: id,
               rank: this.ranks[r],
-              suit: this.suits[s]
+              suit: this.suits[s],
+              active: false,
+              color: this.colors[count%8]
             }
             this.cards.push(card);
             id++;
@@ -190,6 +225,47 @@
     border-radius: 2px;
     border: 1px solid #666;
     background-color:black;
+  }
+
+  .rainbow-red{
+    color: #ff0a0a;
+  }
+
+  .rainbow-orange{
+    color: #fc6e21;
+  }
+
+  .rainbow-yellow{
+    color: #fdff00;
+  }
+
+  .rainbow-green{
+    color: #37d016;
+  }
+
+  .rainbow-teal{
+    color: #00ba93;
+  }
+
+  .rainbow-indigo{
+    color: #162bb8;
+  }
+
+  .rainbow-purple{
+    color: #8413cf;
+  }
+
+  .rainbow-magenta{
+    color: #ce0c82;
+  }
+
+  .glow {
+    border: 3px solid red;
+  }
+
+  .current {
+    width: 300px;
+    height:400px;
   }
 
   .card__suit {

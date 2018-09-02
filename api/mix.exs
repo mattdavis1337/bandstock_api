@@ -20,7 +20,7 @@ defmodule BandstockApi.Mixfile do
   def application do
     [
       mod: {BandstockApi.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :arc_ecto]
     ]
   end
 
@@ -41,7 +41,10 @@ defmodule BandstockApi.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:cors_plug, "~> 1.5"}    ]
+      {:cors_plug, "~> 1.5"},
+      {:arc, "~> 0.10.0"},
+      {:arc_ecto, "~> 0.10.0"}
+    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

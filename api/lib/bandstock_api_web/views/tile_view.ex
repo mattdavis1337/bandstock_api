@@ -1,5 +1,6 @@
 defmodule BandstockApiWeb.TileView do
   use BandstockApiWeb, :view
+  alias BandstockAPI.TileImage
   alias BandstockApiWeb.TileView
 
   def render("index.json", %{tiles: tiles}) do
@@ -13,6 +14,7 @@ defmodule BandstockApiWeb.TileView do
   def render("tile.json", %{tile: tile}) do
     %{id: tile.id,
       name: tile.name,
-      hash: tile.hash}
+      hash: tile.hash,
+      tileimage: tile.tileimage}
   end
 end

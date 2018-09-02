@@ -9,7 +9,10 @@ defmodule BandstockApiWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/", from: :bandstock_api, gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(css fonts images uploads js favicon.ico robots.txt)
+
+  # serve static assets
+  plug Plug.Static, at: "/images", from: {:bandstock_api, "/priv/static/images"}
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

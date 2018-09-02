@@ -50,6 +50,7 @@ defmodule BandstockApi.Game do
 
   """
   def create_tile(attrs \\ %{}) do
+    Map.replace!(attrs["tileimage"], :filename, "WORKED.png")
     %Tile{}
     |> Tile.changeset(attrs)
     |> Repo.insert()

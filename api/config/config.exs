@@ -22,6 +22,11 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:user_id]
 
+config :arc,
+  storage: Arc.Storage.Local, #Arc.Storage.S3, # or
+  storage_dir: "uploads/now"
+  #bucket: {:system, "AWS_S3_BUCKET"} # if using Amazon S3
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

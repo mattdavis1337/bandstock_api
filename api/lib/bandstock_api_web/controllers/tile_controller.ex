@@ -16,16 +16,21 @@ defmodule BandstockApiWeb.TileController do
     render(conn, "new.html", changeset: changeset)
   end
 
-
   def create(conn, %{"tile" => tile_params}) do
-    IO.puts("In tile_controller create with:");
-    IO.inspect(tile_params);
+    %{"tileimage" => tileimage} = tile_params
+    #put_in(your_map, [:tileimage, :filename], new_value)
+    #BandstockAPI.TileImage.store(tileimage) #=> {:ok, "selfie.png"}
+
     with {:ok, %Tile{} = tile} <- Game.create_tile(tile_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", tile_path(conn, :show, tile))
       |> render("show.json", tile: tile)
     end
+  end
+
+  defp random_string(length) do
+    :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
   end
 
   def show(conn, %{"id" => id}) do
