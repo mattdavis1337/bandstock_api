@@ -109,12 +109,10 @@
               color: this.colors[i%8]
             }
 
-            console.log(this.tiles[i]);
             this.cards.push(card);
           }
         })
         .catch(e => {
-          console.log(e);
           this.errors.push(e)
         })
       },

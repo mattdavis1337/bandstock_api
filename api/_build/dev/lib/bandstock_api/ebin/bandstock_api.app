@@ -1,10 +1,12 @@
 {application,bandstock_api,
              [{applications,[kernel,stdlib,elixir,logger,runtime_tools,
-                             gettext,phoenix_pubsub,cowboy,phoenix_html,
-                             cors_plug,phoenix,phoenix_live_reload,postgrex,
-                             phoenix_ecto]},
+                             arc_ecto,gettext,arc,phoenix_pubsub,cowboy,
+                             phoenix_html,cors_plug,phoenix,
+                             phoenix_live_reload,postgrex,phoenix_ecto]},
               {description,"bandstock_api"},
-              {modules,['Elixir.BandstockApi','Elixir.BandstockApi.Accounts',
+              {modules,['Elixir.BandstockAPI.TileImage',
+                        'Elixir.BandstockAPI.TileImage.Type',
+                        'Elixir.BandstockApi','Elixir.BandstockApi.Accounts',
                         'Elixir.BandstockApi.Accounts.User',
                         'Elixir.BandstockApi.Application',
                         'Elixir.BandstockApi.Game',
@@ -32,4 +34,4 @@
               {registered,[]},
               {vsn,"0.0.1"},
               {mod,{'Elixir.BandstockApi.Application',[]}},
-              {extra_applications,[logger,runtime_tools]}]}.
+              {extra_applications,[logger,runtime_tools,arc_ecto]}]}.
