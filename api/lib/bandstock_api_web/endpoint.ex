@@ -13,6 +13,7 @@ defmodule BandstockApiWeb.Endpoint do
 
   # serve static assets
   plug Plug.Static, at: "/images", from: {:bandstock_api, "/priv/static/images"}
+  plug Plug.Static, at: "/uploads/tileimages", from: {:bandstock_api, "/priv/static/uploads"}
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

@@ -22,20 +22,20 @@
     </button>
   </div>
 
-
   <transition-group :name="shuffleSpeed" tag="div" class="deck" style="background-color:black">
 
-    <div  v-for="card in cards" :key="card.id"
+    <div  v-for="card in cards" :key="card.hash"
           @mouseover="card.active = true"
           @mouseleave="card.active = false"
           @click="card.current = !card.current"
           class="card"
           v-bind:class="getClass(card)">
 
-      <span class="card__suit card__suit--top">{{ card.suit }}</span>
-      <span class="card__number">{{ card.rank }} </span>
-      <span class="card__number">{{ card.image }} </span>
-      <span class="card__suit card__suit--bottom">{{ card.suit }}</span>
+
+
+      <img :src="card.image"></img>
+
+      
     </div>
   </transition-group>
   </div>
@@ -101,9 +101,9 @@
 
           for( let i = 0; i < this.tiles.length; i++ ) {
             let card = {
-              id: "tile" + this.tiles[i].id,
+              hash: "tile" + this.tiles[i].hash,
               rank: this.tiles[i].name,
-              image: this.tiles[i].tileimage,
+              image: "http://localhost:4000" + this.tiles[i].image_thumb,
               suit: this.tiles[i].hash,
               active: false,
               color: this.colors[i%8]
@@ -130,7 +130,7 @@
               active: false,
               color: this.colors[count%8]
             }
-            this.cards.push(card);
+            //this.cards.push(card);
             id++;
           }
         }

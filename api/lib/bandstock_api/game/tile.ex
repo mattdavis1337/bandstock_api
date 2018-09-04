@@ -16,6 +16,7 @@ defmodule BandstockApi.Game.Tile do
     tile
     |> cast(attrs, [:name, :hash, :tileimage])
     |> cast_attachments(attrs, [:tileimage])
+    |> unique_constraint(:hash)
     |> validate_required([:name, :hash])
 
   end

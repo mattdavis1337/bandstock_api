@@ -8,26 +8,25 @@ defmodule BandstockAPI.TileImage do
 
   def acl(:thumb, _), do: :public_read
 
+  def transform(:thumb, _) do
+    IO.puts("Transform")
+    {:convert, "-strip -thumbnail 150x200^ -gravity center -extent 150x200 -format png -limit area 10MB -limit disk 100MB", :png}
+  end
+
+  def transform(:original, _) do
+    IO.puts("Transform")
+    {:convert, "-strip -thumbnail 600x800^ -gravity center -extent 600x800 -format png -limit area 10MB -limit disk 100MB", :png}
+  end
+
   def validate({file, _}) do
+    IO.puts("Validate")
     file_extension = file.file_name |> Path.extname |> String.downcase
     Enum.member?(@extension_whitelist, file_extension)
   end
 
-  #def transform(:thumb, _) do
-  #  {:convert, "-thumbnail 100x100^ -gravity center -extent 100x100 -format png", :png}
-  #end
-
   def filename(version, {file, scope}) do
-    #IO.puts("version: " <> version);
-    #IO.puts("file: " <> file);
-    #IO.puts("scope: " <> scope);
-    #file_name = Path.basename(file.file_name, Path.extname(file.file_name))
-    #IO.puts("file_name: " <> file_name);
-    IO.puts("*****In filename/2*****")
-    IO.inspect(file);
-    IO.inspect(scope);
-    "#{random_string(8)}"
-    #{}"#{scope.id}_#{version}_#{file_name}_"
+    {file_name, file_ext} = String.split_at(file.file_name, -String.length(Path.extname(file.file_name)));
+    "#{file_name}_#{version}"
   end
 
   defp random_string(length) do
@@ -35,9 +34,10 @@ defmodule BandstockAPI.TileImage do
   end
 
   def storage_dir(_, {file, user}) do
-    IO.puts("in storage_dir");
+    IO.puts("storage_dir")
+    #IO.puts("in storage_dir");
     IO.inspect(file);
     IO.inspect(user)
-    "priv/static/uploads/tileimages/"
+    "uploads/tileimages/"
   end
 end

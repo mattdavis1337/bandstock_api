@@ -16,8 +16,21 @@ defmodule BandstockApiWeb.TileController do
     render(conn, "new.html", changeset: changeset)
   end
 
+
   def create(conn, %{"tile" => tile_params}) do
     %{"tileimage" => tileimage} = tile_params
+    IO.puts("TileController.create");
+    IO.inspect(tile_params);
+    #random_string(8) <> ".png";
+
+    {:ok, filename} = Map.fetch(tile_params["tileimage"], :filename);
+    file_ext = Path.extname(filename) |> String.downcase;
+    tile_params = Map.replace!(tile_params, "hash", String.upcase(random_string(16)));
+    IO.inspect(tile_params);
+    tile_params = Map.replace!(tile_params, "tileimage", Map.replace!(tile_params["tileimage"], :filename, tile_params["hash"] <> ".png"));
+
+
+    IO.inspect(tile_params);
     #put_in(your_map, [:tileimage, :filename], new_value)
     #BandstockAPI.TileImage.store(tileimage) #=> {:ok, "selfie.png"}
 
@@ -30,7 +43,7 @@ defmodule BandstockApiWeb.TileController do
   end
 
   defp random_string(length) do
-    :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
+    :crypto.strong_rand_bytes(length) |> Base.encode16 |> binary_part(0, length);
   end
 
   def show(conn, %{"id" => id}) do
@@ -51,5 +64,9 @@ defmodule BandstockApiWeb.TileController do
     with {:ok, %Tile{}} <- Game.delete_tile(tile) do
       send_resp(conn, :no_content, "")
     end
+  end
+
+  defp random_string(length) do
+    :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
   end
 end
