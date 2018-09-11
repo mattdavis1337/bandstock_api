@@ -7,19 +7,16 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Hello BandstockApi!</title>
+    <title>Bandstock</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/swipe.css") %>">
+
   </head>
 
   <body>
     <div class="container">
       <header class="header">
-        <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
-            <li><a href="http://www.phoenixframework.org/docs">Get Started</a></li>
-          </ul>
-        </nav>
-        <span class="logo"></span>
+        <!-- span class="logo"></span-->
       </header>
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
@@ -30,6 +27,10 @@
       </main>
 
     </div> <!-- /container -->
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <!-- script src="<%= static_path(@conn, "/js/swipe.js") %>"></script-->
+
+
   </body>
 </html>

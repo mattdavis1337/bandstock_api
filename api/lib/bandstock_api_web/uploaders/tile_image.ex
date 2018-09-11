@@ -9,12 +9,10 @@ defmodule BandstockAPI.TileImage do
   def acl(:thumb, _), do: :public_read
 
   def transform(:thumb, _) do
-    IO.puts("Transform")
     {:convert, "-strip -thumbnail 150x200^ -gravity center -extent 150x200 -format png -limit area 10MB -limit disk 100MB", :png}
   end
 
   def transform(:original, _) do
-    IO.puts("Transform")
     {:convert, "-strip -thumbnail 600x800^ -gravity center -extent 600x800 -format png -limit area 10MB -limit disk 100MB", :png}
   end
 

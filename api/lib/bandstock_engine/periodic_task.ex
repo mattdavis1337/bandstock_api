@@ -16,7 +16,7 @@ defmodule BandstockEngine.PeriodicTask do
     {prevTime, elapsed} = state.clock;
     time = System.monotonic_time();
     state = Map.replace!(state, :clock, {time, time-prevTime});
-    IO.inspect(state.clock)
+    #IO.inspect(state.clock)
     #BandstockEngine.Engine.say(state.engine, "yes")
     {:noreply, state, @timeout}
   end

@@ -1,0 +1,33 @@
+<h2>Listing Bids</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Phone</th>
+      <th>Piece</th>
+      <th>Amount</th>
+      <th>Comment</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for bid <- @bids do %>
+    <tr>
+      <td><%= bid.name %></td>
+      <td><%= bid.phone %></td>
+      <td><%= bid.piece %></td>
+      <td><%= bid.amount %></td>
+      <td><%= bid.comment %></td>
+
+      <td class="text-right">
+        <span><%= link "Show", to: bid_path(@conn, :show, bid), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Edit", to: bid_path(@conn, :edit, bid), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Delete", to: bid_path(@conn, :delete, bid), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Bid", to: bid_path(@conn, :new) %></span>

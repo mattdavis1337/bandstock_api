@@ -2,6 +2,7 @@
   <div class="board" style="width:60%;margin:0 auto">
   <h1>{{ msg }}</h1>
   <div class="count-section">
+
   </div>
   <h1 class="title">
   </h1>
@@ -29,11 +30,11 @@
     <div  v-for="card in cards" :key="card.hash"
           @mouseover="card.active=true"
           @mouseleave="card.active=false"
-
+          @click="loadSingleCard(card)"
           class="card"
           v-bind:class="getClass(card)">
 
-      <img @click="setCurrentCard(card)" :src="card.image" ></img>
+      <img :src="card.image" ></img>
 
     </div>
   </transition-group>
@@ -91,11 +92,10 @@
           "rainbow-magenta" : card.color == "magenta",
           };
       },
-      setCurrentCard: function(cardIn) {
-        console.log(cardIn.current)
+      loadSingleCard: function(cardIn) {
+        console.log(cardIn.hash)
 
-        cardIn.current = !cardIn.current
-        console.log(cardIn.current)
+
       },
       loadTiles() {
         axios.get(`http://localhost:4000/api/tiles`)

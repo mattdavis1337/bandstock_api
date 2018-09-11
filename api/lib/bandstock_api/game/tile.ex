@@ -8,6 +8,7 @@ defmodule BandstockApi.Game.Tile do
     field :name, :string
     field :tileimage, BandstockAPI.TileImage.Type
     many_to_many :boards, BandstockApi.Game.Board, join_through: "tiles_boards"
+    has_many :bids, EctoAssoc.Bid
     timestamps()
   end
 

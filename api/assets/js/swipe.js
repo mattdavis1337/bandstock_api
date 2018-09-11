@@ -1,11 +1,8 @@
-<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-<script>
 $(document).ready(function() {
 
   var animating = false;
   var cardsCounter = 0;
-
-  var numOfCards = <%= Kernel.length(@cards) %>;
+  var numOfCards = 6;
   var decisionVal = 80;
   var pullDeltaX = 0;
   var deg = 0;
@@ -80,33 +77,3 @@ $(document).ready(function() {
   });
 
 });
-</script>
-
-  <div class="demo">
-  <header class="demo__header"></header>
-
-  <div class="demo__content">
-    <%= for card <- @cards do %>
-    <div class="demo__card-cont">
-      <div class="demo__card">
-        <div class="demo__card__top">
-          <div class="demo__card__img"><img class="card-img-content" src="<%= card.image_thumb %>"></img></div>
-          <p class="demo__card__name"><%= card.name %></p>
-        </div>
-        <div class="demo__card__btm">
-          <p class="demo__card__we"><%= card.hash %></p>
-        </div>
-        <div class="demo__card__choice m--reject"></div>
-        <div class="demo__card__choice m--like"></div>
-        <div class="demo__card__drag"></div>
-      </div>
-      <% end %>
-    </div>
-    <p class="demo__tip">Swipe left or right</p>
-  </div>
-</div>
-
-
-</body>
-
-</html>

@@ -19,7 +19,6 @@ defmodule BandstockApiWeb.TileController do
     render(conn, "new.html", changeset: changeset)
   end
 
-
   def create(conn, %{"tile" => tile_params}) do
     %{"tileimage" => tileimage} = tile_params
     {:ok, filename} = Map.fetch(tile_params["tileimage"], :filename);
