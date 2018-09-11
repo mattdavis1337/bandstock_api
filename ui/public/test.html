@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>three.js css3d - periodic table</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			html, body {
+				height: 100%;
+			}
+			body {
+				background-color: #000000;
+				margin: 0;
+				font-family: Helvetica, sans-serif;;
+				overflow: hidden;
+			}
+			a {
+				color: #ffffff;
+			}
+			#info {
+				position: absolute;
+				width: 100%;
+				color: #ffffff;
+				padding: 5px;
+				font-family: Monospace;
+				font-size: 13px;
+				font-weight: bold;
+				text-align: center;
+				z-index: 1;
+			}
+			#menu {
+				position: absolute;
+				bottom: 20px;
+				width: 100%;
+				text-align: center;
+			}
+			.element {
+				width: 120px;
+				height: 160px;
+				box-shadow: 0px 0px 12px rgba(0,255,255,0.5);
+				border: 1px solid rgba(127,255,255,0.25);
+				text-align: center;
+				cursor: default;
+			}
+			.element:hover {
+				box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
+				border: 1px solid rgba(127,255,255,0.75);
+			}
+				.element .number {
+					position: absolute;
+					top: 20px;
+					right: 20px;
+					font-size: 12px;
+					color: rgba(127,255,255,0.75);
+				}
+				.element .symbol {
+					position: absolute;
+					top: 40px;
+					left: 0px;
+					right: 0px;
+					font-size: 60px;
+					font-weight: bold;
+					color: rgba(255,255,255,0.75);
+					text-shadow: 0 0 10px rgba(0,255,255,0.95);
+				}
+				.element .details {
+					position: absolute;
+					bottom: 15px;
+					left: 0px;
+					right: 0px;
+					font-size: 12px;
+					color: rgba(127,255,255,0.75);
+				}
+			button {
+				color: rgba(127,255,255,0.75);
+				background: transparent;
+				outline: 1px solid rgba(127,255,255,0.75);
+				border: 0px;
+				padding: 5px 10px;
+				cursor: pointer;
+			}
+			button:hover {
+				background-color: rgba(0,255,255,0.5);
+			}
+			button:active {
+				color: #000000;
+				background-color: rgba(0,255,255,0.75);
+			}
+		</style>
+	</head>
+	<body>
+		<script src="../js/three.js"></script>
+		<script src="../js/tween.min.js"></script>
+		<script src="../js/TrackballControls.js"></script>
+		<script src="../js/CSS3DRenderer.js"></script>
+
+		<div id="info"><a href="http://threejs.org" target="_blank" rel="noopener">three.js css3d</a> - periodic table. <a href="https://plus.google.com/113862800338869870683/posts/QcFk5HrWran" target="_blank" rel="noopener">info</a>.</div>
+		<div id="container"></div>
+		<div id="menu">
+			<button id="table">TABLE</button>
+			<button id="sphere">SPHERE</button>
+			<button id="helix">HELIX</button>
+			<button id="grid">GRID</button>
+		</div>
+
+		<script>
+    var table = [
+      "S", "Stephanie", "1.00794", 1, 1,
+      "S", "Stephanie", "1.00794", 2, 1,
+      "S", "Stephanie", "1.00794", 3, 1,
+      "S", "Stephanie", "1.00794", 4, 1,
+      "S", "Stephanie", "1.00794", 5, 1,
+      "S", "Stephanie", "1.00794", 6, 1,
+      "S", "Stephanie", "1.00794", 7, 1,
+      "S", "Stephanie", "1.00794", 8, 1,
+      "S", "Stephanie", "1.00794", 9, 1,
+      "S", "Stephanie", "1.00794", 10, 1,
+      "S", "Stephanie", "1.00794", 11, 1,
+      "S", "Stephanie", "1.00794", 12, 1,
+      "S", "Stephanie", "1.00794", 13, 1,
+      "Pb", "Lead", "207.2", 14, 6,
+      "Bi", "Bismuth", "208.9804", 15, 6,
+      "Po", "Polonium", "(209)", 16, 6,
+      "At", "Astatine", "(210)", 17, 6,
+      "Rn", "Radon", "(222)", 18, 6,
+      "Fr", "Francium", "(223)", 1, 7,
+      "Ra", "Radium", "(226)", 2, 7,
+      "Ac", "Actinium", "(227)", 4, 10,
+      "Th", "Thorium", "232.03806", 5, 10,
+      "Pa", "Protactinium", "231.0588", 6, 10,
+      "U", "Uranium", "238.02891", 7, 10,
+      "Np", "Neptunium", "(237)", 8, 10,
+      "Pu", "Plutonium", "(244)", 9, 10,
+      "Am", "Americium", "(243)", 10, 10,
+      "Cm", "Curium", "(247)", 11, 10,
+      "Bk", "Berkelium", "(247)", 12, 10,
+      "Cf", "Californium", "(251)", 13, 10,
+      "Es", "Einstenium", "(252)", 14, 10,
+      "Fm", "Fermium", "(257)", 15, 10,
+      "Md", "Mendelevium", "(258)", 16, 10,
+      "No", "Nobelium", "(259)", 17, 10,
+      "Lr", "Lawrencium", "(262)", 18, 10,
+      "Rf", "Rutherfordium", "(267)", 4, 7,
+      "Db", "Dubnium", "(268)", 5, 7,
+      "Sg", "Seaborgium", "(271)", 6, 7,
+      "Bh", "Bohrium", "(272)", 7, 7,
+      "Hs", "Hassium", "(270)", 8, 7,
+      "Mt", "Meitnerium", "(276)", 9, 7,
+      "Ds", "Darmstadium", "(281)", 10, 7,
+      "Rg", "Roentgenium", "(280)", 11, 7,
+      "Cn", "Copernicium", "(285)", 12, 7,
+      "Nh", "Nihonium", "(286)", 13, 7,
+      "Fl", "Flerovium", "(289)", 14, 7,
+      "Mc", "Moscovium", "(290)", 15, 7,
+      "Lv", "Livermorium", "(293)", 16, 7,
+      "Ts", "Tennessine", "(294)", 17, 7,
+      "Og", "Oganesson", "(294)", 18, 7
+    ];
+
+    var camera, scene, renderer, mouse, raycaster;
+    var mouse = new THREE.Vector2(), INTERSECTED;
+    var controls;
+    var objects = [];
+    var targets = { table: [], sphere: [], helix: [], grid: [] };
+
+    init();
+    //animate();
+
+    function init() {
+      camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
+      camera.position.z = 3000;
+      camera.addEventListener('goto', function( event ) {
+        console.log("goto:");
+        console.log(event);
+      })
+
+      var raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera);
+
+      scene = new THREE.Scene();
+
+      // table
+      for ( var i = 0; i < table.length; i += 5 ) {
+        var element = document.createElement( 'div' );
+        element.className = 'element';
+        element.style.backgroundColor = 'rgba(0,127,127,' + ( Math.random() * 0.5 + 0.25 ) + ')';
+        var number = document.createElement( 'div' );
+        number.className = 'number';
+        number.textContent = (i/5) + 1;
+        element.appendChild( number );
+        var symbol = document.createElement( 'div' );
+        symbol.className = 'symbol';
+        symbol.textContent = table[ i ];
+        element.appendChild( symbol );
+        var details = document.createElement( 'div' );
+        details.className = 'details';
+        details.innerHTML = table[ i + 1 ] + '<br>' + table[ i + 2 ];
+        element.appendChild( details );
+
+        var object = new THREE.CSS3DObject( element );
+        //camera.dispatchEvent({type: 'goto', event: event})
+
+
+
+
+        /*object.addEventListener('click', function ( event ){
+          camera.dispatchEvent({type: 'goto', event: event})
+        }, false);*/
+
+        object.element.addEventLIste
+        object.position.x = Math.random() * 4000 - 2000;
+        object.position.y = Math.random() * 4000 - 2000;
+        object.position.z = Math.random() * 4000 - 2000;
+        scene.add( object );
+        objects.push( object );
+
+        //
+        var object = new THREE.Object3D();
+        if(i % 2 == 0){
+          object.position.x = -window.innerWidth;
+          object.position.y = -window.innerHeight;
+        }
+        else{
+          object.position.x = window.innerWidth;
+          object.position.y = window.innerHeight;
+        }
+        targets.table.push( object );
+      }
+
+
+      // sphere
+      var vector = new THREE.Vector3();
+      for ( var i = 0, l = objects.length; i < l; i ++ ) {
+        var phi = Math.acos( -1 + ( 2 * i ) / l );
+        var theta = Math.sqrt( l * Math.PI ) * phi;
+        var object = new THREE.Object3D();
+        object.position.setFromSphericalCoords( 800, phi, theta );
+        vector.copy( object.position ).multiplyScalar( 2 );
+        object.lookAt( vector );
+        targets.sphere.push( object );
+      }
+      // helix
+      var vector = new THREE.Vector3();
+      for ( var i = 0, l = objects.length; i < l; i ++ ) {
+        var theta = i * 0.175 + Math.PI;
+        var y = - ( i * 8 ) + 450;
+        var object = new THREE.Object3D();
+        object.position.setFromCylindricalCoords( 900, theta, y );
+        vector.x = object.position.x * 2;
+        vector.y = object.position.y;
+        vector.z = object.position.z * 2;
+        object.lookAt( vector );
+        targets.helix.push( object );
+      }
+      // grid
+      for ( var i = 0; i < objects.length; i ++ ) {
+        var object = new THREE.Object3D();
+        object.position.x = ( ( i % 5 ) * 400 ) - 800;
+        object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 400 ) + 800;
+        object.position.z = ( Math.floor( i / 25 ) ) * 1000 - 2000;
+        targets.grid.push( object );
+      }
+
+      renderer = new THREE.CSS3DRenderer();
+      renderer.setSize( window.innerWidth, window.innerHeight );
+      document.getElementById( 'container' ).appendChild( renderer.domElement );
+
+      controls = new THREE.TrackballControls( camera, renderer.domElement );
+      controls.rotateSpeed = 0.5;
+      controls.minDistance = 500;
+      controls.maxDistance = 6000;
+      controls.addEventListener( 'change', render );
+
+
+    }
+
+
+    	document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+
+			function onDocumentMouseDown( event ) {
+    		event.preventDefault();
+    		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+				console.log(mouse);
+			}
+
+		</script>
+	</body>
+</html>

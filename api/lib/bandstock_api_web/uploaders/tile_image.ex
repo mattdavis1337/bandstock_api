@@ -33,11 +33,7 @@ defmodule BandstockAPI.TileImage do
     :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
   end
 
-  def storage_dir(_, {file, user}) do
-    IO.puts("storage_dir")
-    #IO.puts("in storage_dir");
-    IO.inspect(file);
-    IO.inspect(user)
-    "uploads/tileimages/"
+  def storage_dir(_, {file, tile}) do
+    "priv/static/uploads/tileimages/"
   end
 end

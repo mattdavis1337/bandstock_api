@@ -7,6 +7,9 @@ defmodule BandstockApiWeb.TileController do
   action_fallback BandstockApiWeb.FallbackController
 
   def index(conn, _params) do
+
+    IO.puts("In Index");
+
     tiles = Game.list_tiles()
     render(conn, "index.json", tiles: tiles)
   end
@@ -19,20 +22,10 @@ defmodule BandstockApiWeb.TileController do
 
   def create(conn, %{"tile" => tile_params}) do
     %{"tileimage" => tileimage} = tile_params
-    IO.puts("TileController.create");
-    IO.inspect(tile_params);
-    #random_string(8) <> ".png";
-
     {:ok, filename} = Map.fetch(tile_params["tileimage"], :filename);
     file_ext = Path.extname(filename) |> String.downcase;
     tile_params = Map.replace!(tile_params, "hash", String.upcase(random_string(16)));
-    IO.inspect(tile_params);
     tile_params = Map.replace!(tile_params, "tileimage", Map.replace!(tile_params["tileimage"], :filename, tile_params["hash"] <> ".png"));
-
-
-    IO.inspect(tile_params);
-    #put_in(your_map, [:tileimage, :filename], new_value)
-    #BandstockAPI.TileImage.store(tileimage) #=> {:ok, "selfie.png"}
 
     with {:ok, %Tile{} = tile} <- Game.create_tile(tile_params) do
       conn

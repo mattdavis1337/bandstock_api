@@ -23,19 +23,18 @@
   </div>
 
   <transition-group :name="shuffleSpeed" tag="div" class="deck" style="background-color:black">
+    <!-- @mouseover="card.active = true"
+    "-->
 
     <div  v-for="card in cards" :key="card.hash"
-          @mouseover="card.active = true"
-          @mouseleave="card.active = false"
-          @click="card.current = !card.current"
+          @mouseover="card.active=true"
+          @mouseleave="card.active=false"
+
           class="card"
           v-bind:class="getClass(card)">
 
+      <img @click="setCurrentCard(card)" :src="card.image" ></img>
 
-
-      <img :src="card.image"></img>
-
-      
     </div>
   </transition-group>
   </div>
@@ -90,8 +89,13 @@
           "rainbow-indigo" : card.color == "indigo",
           "rainbow-purple" : card.color == "purple",
           "rainbow-magenta" : card.color == "magenta",
-
           };
+      },
+      setCurrentCard: function(cardIn) {
+        console.log(cardIn.current)
+
+        cardIn.current = !cardIn.current
+        console.log(cardIn.current)
       },
       loadTiles() {
         axios.get(`http://localhost:4000/api/tiles`)
@@ -215,8 +219,8 @@
   }
 
   .card {
-    width: 75px;
-    height: 100px;
+    width: 150px;
+    height: 200px;
     float: left;
     margin-right: 5px;
     margin-bottom: 5px;
@@ -309,25 +313,26 @@
     font-size: 30px;
   }
 
-  .shuffleSlow-move {
-    transition: transform 2s;
-  }
 
-  .shuffleMedium-move {
-    transition: transform 1s;
-  }
+    .shuffleSlow-move {
+      transition: transform 2s;
+    }
 
-  .shuffleFast-move {
-    transition: transform 0.5s;
-  }
+    .shuffleMedium-move {
+      transition: transform 2s;
+    }
 
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
-  }
+    .shuffleFast-move {
+      transition: transform 0.5s;
+    }
 
-  .fade-enter, .fade-leave-to {
-    opacity: 0;
-  }
+    .fade-enter-active, .fade-leave-active {
+      transition: opacity 2s;
+    }
+
+    .fade-enter, .fade-leave-to {
+      opacity: 0;
+    }
 
   @media (max-width: 1210px) {
     .deck {

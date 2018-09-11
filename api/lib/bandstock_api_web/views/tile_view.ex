@@ -4,6 +4,7 @@ defmodule BandstockApiWeb.TileView do
   alias BandstockApiWeb.TileView
 
   def render("index.json", %{tiles: tiles}) do
+    IO.puts("In Render index");
     %{data: render_many(tiles, TileView, "tile.json")}
   end
 
@@ -12,13 +13,15 @@ defmodule BandstockApiWeb.TileView do
   end
 
   def render("tile.json", %{tile: tile}) do
-    IO.puts("render tile.json");
     file_name = tile.tileimage[:file_name]
-
+    original_url = TileImage.url({file_name, tile}, :original);
+    original_url = String.slice(original_url, String.length("/priv/static"), String.length(original_url));
+    thumb_url = TileImage.url({file_name, tile}, :thumb);
+    thumb_url = String.slice(thumb_url, String.length("/priv/static"), String.length(thumb_url));
     #Map.replace!(tile, "tileimage", TileImage.url({}));
     %{name: tile.name,
       hash: tile.hash,
-      image_full: TileImage.url({file_name, tile}, :original),
-      image_thumb: TileImage.url({file_name, tile}, :thumb)}
+      image_full: original_url,
+      image_thumb: thumb_url}
   end
 end

@@ -12,6 +12,7 @@ defmodule BandstockApi.Application do
       supervisor(BandstockApi.Repo, []),
       # Start the endpoint when the application starts
       supervisor(BandstockApiWeb.Endpoint, []),
+      supervisor(BandstockEngine.Supervisor, []),
       # Start your own worker by calling: BandstockApi.Worker.start_link(arg1, arg2, arg3)
       # worker(BandstockApi.Worker, [arg1, arg2, arg3]),
     ]
