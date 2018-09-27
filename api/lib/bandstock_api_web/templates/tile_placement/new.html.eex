@@ -1,0 +1,3 @@
+<h2>New Tile Placement</h2>
+
+<%= render "form.html", Map.put(assigns, :action, tile_path(@conn, :create)) %>

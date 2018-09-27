@@ -4,9 +4,9 @@ defmodule BandstockApiWeb.TileControllerTest do
   alias BandstockApi.Game
   alias BandstockApi.Game.Tile
 
-  @create_attrs %{hash: "some hash", name: "some name"}
+  @create_attrs %{hash: "some hash", name: "some name", tileimage: %{}}
   @update_attrs %{hash: "some updated hash", name: "some updated name"}
-  @invalid_attrs %{hash: nil, name: nil}
+  @invalid_attrs %{hash: nil, name: nil, tileimage: %{}}
 
 #  %BandstockApi.Game.Tile{
 #  __meta__: #Ecto.Schema.Metadata<:loaded, "tiles">,
@@ -39,7 +39,7 @@ defmodule BandstockApiWeb.TileControllerTest do
   describe "index" do
     test "lists all tiles", %{conn: conn} do
       conn = get conn, tile_path(conn, :index)
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200) == []
     end
   end
 

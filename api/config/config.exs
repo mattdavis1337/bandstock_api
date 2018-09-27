@@ -27,6 +27,12 @@ config :arc,
   storage_dir: "uploads/now"
   #bucket: {:system, "AWS_S3_BUCKET"} # if using Amazon S3
 
+config :plug, :statuses, %{
+  404 => "Resource Not Found",
+  451 => "Unavailable For Legal Reasons",
+  500 => "Internal Error"
+}
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

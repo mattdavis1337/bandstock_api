@@ -33,7 +33,8 @@ defmodule BandstockApiWeb.BoardControllerTest do
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
         "hash" => "some hash",
-        "name" => "some name"}
+        "name" => "some name",
+        "tiles" => []}
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -53,7 +54,8 @@ defmodule BandstockApiWeb.BoardControllerTest do
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
         "hash" => "some updated hash",
-        "name" => "some updated name"}
+        "name" => "some updated name",
+        "tiles" => []}
     end
 
     test "renders errors when data is invalid", %{conn: conn, board: board} do

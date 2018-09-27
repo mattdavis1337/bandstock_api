@@ -3,11 +3,11 @@ defmodule BandstockApiWeb.TileController do
 
   alias BandstockApi.Game
   alias BandstockApi.Game.Tile
+  alias BandstockApi.Game.Board
 
   action_fallback BandstockApiWeb.FallbackController
 
   def index(conn, _params) do
-
     IO.puts("In Index");
 
     tiles = Game.list_tiles()
@@ -20,18 +20,47 @@ defmodule BandstockApiWeb.TileController do
   end
 
   def create(conn, %{"tile" => tile_params}) do
-    %{"tileimage" => tileimage} = tile_params
-    {:ok, filename} = Map.fetch(tile_params["tileimage"], :filename);
-    file_ext = Path.extname(filename) |> String.downcase;
-    tile_params = Map.replace!(tile_params, "hash", String.upcase(random_string(16)));
-    tile_params = Map.replace!(tile_params, "tileimage", Map.replace!(tile_params["tileimage"], :filename, tile_params["hash"] <> ".png"));
+    IO.inspect("in tile_controller.create")
+    board = Game.get_board!(1) #MFD TODO: put everything on board 1 until we're ready to get fancy
 
-    with {:ok, %Tile{} = tile} <- Game.create_tile(tile_params) do
+    with  {:ok, tileimage} <- get_tileimage(tile_params),
+          {:ok, filename} <- parse_filename(tileimage),
+          #{:ok, name} <- parse_file_extension(filename),
+          {:ok, tile_params} <- parse_tile_params(tile_params, tileimage),
+          {:ok, %Tile{} = tile} <- Game.create_tile(tile_params),
+          {:ok, %Board{} = board} <- Game.link_tile_and_board(tile, board)
+    do
       conn
       |> put_status(:created)
       |> put_resp_header("location", tile_path(conn, :show, tile))
       |> render("show.json", tile: tile)
+    else
+      :error -> :error
     end
+  end
+
+  def get_tileimage(%{"tileimage" => nil}), do: {:error}
+  def get_tileimage(%{"tileimage" => tileimage}), do: {:ok, tileimage}
+  def get_tileimage(_), do: {:error}
+
+  defp parse_filename(tileimage) do
+    IO.puts("parse_filename")
+    IO.inspect(tileimage)
+    Map.fetch(tileimage, :filename)
+  end
+
+  defp parse_file_extension(filename) do
+    IO.puts("parse_file_extension")
+    IO.inspect(filename)
+    {:ok, Path.extname(filename) |> String.downcase}
+  end
+
+  defp parse_tile_params(params, tileimage) do
+    IO.puts("parse_tile_params")
+
+    a = Map.replace!(params, "hash", String.upcase(random_string(16)))
+    b = Map.replace!(a, "tileimage", Map.replace!(tileimage, :filename, a["hash"] <> ".png"))
+    {:ok, b}
   end
 
   defp random_string(length) do
@@ -56,9 +85,5 @@ defmodule BandstockApiWeb.TileController do
     with {:ok, %Tile{}} <- Game.delete_tile(tile) do
       send_resp(conn, :no_content, "")
     end
-  end
-
-  defp random_string(length) do
-    :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
   end
 end

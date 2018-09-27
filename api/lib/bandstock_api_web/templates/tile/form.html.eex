@@ -10,10 +10,25 @@
     <%= text_input f, :name, class: "form-control" %>
     <%= error_tag f, :name %>
 
-
     <%= label f, :hash, class: "control-label" %>
     <%= text_input f, :hash, class: "form-control" %>
     <%= error_tag f, :hash %>
+
+    <%= label f, :x, class: "control-label" %>
+    <%= text_input f, :x, class: "form-control" %>
+    <%= error_tag f, :x %>
+
+    <%= label f, :y, class: "control-label" %>
+    <%= text_input f, :y, class: "form-control" %>
+    <%= error_tag f, :y %>
+
+    <%= label f, :z, class: "control-label" %>
+    <%= text_input f, :z, class: "form-control" %>
+    <%= error_tag f, :z %>
+
+    <%= label f, :type, class: "control-label" %>
+    <%= text_input f, :type, class: "form-control" %>
+    <%= error_tag f, :type %>
   </div>
 
   <div class="form-group">

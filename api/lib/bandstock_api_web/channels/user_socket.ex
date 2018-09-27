@@ -2,7 +2,7 @@ defmodule BandstockApiWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", BandstockApiWeb.RoomChannel
+  channel "board:*", BandstockApiWeb.BoardChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -19,9 +19,16 @@ defmodule BandstockApiWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
+  def connect(%{"token" => token}, socket) do
+    #with {ok, user_id} <- verify_token(token),
     {:ok, socket}
   end
+
+  @salt "user socket auth"
+  @max_age 86400
+
+  #def verify_token(token), do:
+  #    Phoenix.Token.verify(BandstockApiWeb.Endpoint, @salt, token, max_age: @max_age)
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
@@ -33,5 +40,13 @@ defmodule BandstockApiWeb.UserSocket do
   #     BandstockApiWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
+
   def id(_socket), do: nil
+
+  # def id(socket) do
+  #   IO.puts("id")
+  #   IO.inspect("user_socket:#{socket.assigns.user_id}")
+  #   "user_socket:#{socket.assigns.user_id}"
+  # end
+
 end

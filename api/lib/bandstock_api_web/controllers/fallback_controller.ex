@@ -17,4 +17,11 @@ defmodule BandstockApiWeb.FallbackController do
     |> put_status(:not_found)
     |> render(BandstockApiWeb.ErrorView, :"404")
   end
+
+  def call(conn, :error) do
+    conn
+    |> put_status(:not_found)
+    |> render(BandstockApiWeb.ErrorView, :"500")
+  end
+
 end

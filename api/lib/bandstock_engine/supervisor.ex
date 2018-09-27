@@ -3,7 +3,6 @@ defmodule BandstockEngine.Supervisor do
 
   def start_link do
     reply = Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
-    IO.inspect(reply)
     reply
   end
 

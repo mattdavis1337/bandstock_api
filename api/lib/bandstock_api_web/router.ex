@@ -1,6 +1,10 @@
 defmodule BandstockApiWeb.Router do
   use BandstockApiWeb, :router
 
+  pipeline :three_layout do
+    plug :put_layout, {BandstockApiWeb.ThreeView, :three}
+  end
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -15,12 +19,14 @@ defmodule BandstockApiWeb.Router do
   end
 
   scope "/", BandstockApiWeb do
-    pipe_through :browser # Use the default browser stack
-    resources "/bids", BidController
+    pipe_through [:browser, :three_layout] #show the three layout
     get "/", PageController, :index
+  end
+
+  scope "/", BandstockApiWeb do
+    pipe_through [:browser] # Use the default browser stack
     get "/boards/new", BoardController, :new
     get "/tiles/new", TileController, :new
-
   end
 
   scope "/api", BandstockApiWeb do
@@ -29,7 +35,6 @@ defmodule BandstockApiWeb.Router do
     resources "/boards", BoardController, except: [:new, :edit]
     resources "/users", UserController, except: [:new, :edit]
   end
-
 
   # Other scopes may use custom stacks.
   # scope "/api", BandstockApiWeb do

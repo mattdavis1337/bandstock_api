@@ -38,6 +38,10 @@ defmodule BandstockApiWeb.BoardController do
     end
   end
 
+  def link_tile_and_board(conn, %{}) do
+    
+  end
+
   def delete(conn, %{"id" => id}) do
     board = Game.get_board!(id)
     with {:ok, %Board{}} <- Game.delete_board(board) do

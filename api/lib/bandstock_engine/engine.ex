@@ -26,7 +26,6 @@ defmodule BandstockEngine.Engine do
   def handle_call({:say, msg}, _from, state) do
     time = System.monotonic_time();
     IO.puts("in handle_call :say ")
-    IO.inspect(state)
     state = Map.replace!(state, :says, [msg | state.says])
     {:reply, state, state}
   end

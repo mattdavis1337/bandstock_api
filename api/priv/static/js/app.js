@@ -1669,6 +1669,12 @@ require.register("js/app.js", function(exports, require, module) {
 "use strict";
 
 require("phoenix_html");
+
+var _socket = require("./socket");
+
+var _socket2 = _interopRequireDefault(_socket);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 });
 
 ;require.register("js/socket.js", function(exports, require, module) {
@@ -1733,13 +1739,38 @@ var socket = new _phoenix.Socket("/socket", { params: { token: window.userToken 
 // and connect at the socket path in "lib/web/endpoint.ex":
 socket.connect();
 
-// Now that you are connected, you can join channels with a topic:
-var channel = socket.channel("topic:subtopic", {});
-channel.join().receive("ok", function (resp) {
-  console.log("Joined successfully", resp);
-}).receive("error", function (resp) {
-  console.log("Unable to join", resp);
+document.addEventListener("DOMContentLoaded", function (event) {
+  var channel = socket.channel("board:1", {});
+  var boardTableButton = document.querySelector("#table");
+  var boardSphereButton = document.querySelector("#sphere");
+  var boardClientOutput = document.querySelector("#board-output");
+
+  boardTableButton.addEventListener('click', function (event) {
+    channel.push("board_input", { body: "boardInput Table" });
+  }, false);
+
+  boardSphereButton.addEventListener('click', function (event) {
+    channel.push("board_input", { body: "boardInput Sphere" });
+  }, false);
+
+  channel.on("board_output", function (payload) {
+    console.log();
+    console.log("from server: " + payload.body);
+
+    //`[${Date()}] ${payload.body}`
+  });
+  channel.join().receive("ok", function (resp) {
+    console.log("Joined successfully", resp);
+    var event = new Event("initBoard");
+    event.board = resp.board;
+    window.dispatchEvent(event);
+  }).receive("error", function (resp) {
+    console.log("Unable to join", resp);
+  });
 });
+
+// Now that you are connected, you can join channels with a topic:
+
 
 exports.default = socket;
 });
