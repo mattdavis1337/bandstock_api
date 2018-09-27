@@ -94,8 +94,6 @@
       },
       loadSingleCard: function(cardIn) {
         console.log(cardIn.hash)
-
-
       },
       loadTiles() {
         axios.get(`http://localhost:4000/api/tiles`)
