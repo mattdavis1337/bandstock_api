@@ -63,9 +63,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
     channel.push("board_input", {body: "boardInput Table"})
   }, false );
 
-  boardSphereButton.addEventListener( 'click', function ( event ) {
+  if(boardSphereButton){
+    boardSphereButton.addEventListener( 'click', function ( event ) {
     channel.push("board_input", {body: "boardInput Sphere"})
   }, false );
+  }
 
   channel.on("board_output", payload => {
     console.log()
