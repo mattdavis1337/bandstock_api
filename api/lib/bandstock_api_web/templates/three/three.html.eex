@@ -72,12 +72,21 @@
 					font-size: 12px;
 					color: rgba(255,127,255,0.75);
 				}
+
+				.artInfoPanel:hover{
+					box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
+					background-color: rgba(0,255,255,0.95);
+				}
+
+				.silverFrame {
+					border: 7px solid rgba(127,127,127,0.85);
+				}
 			button {
 				color: rgba(127,255,255,0.75);
 				background: transparent;
 				outline: 1px solid rgba(127,255,255,0.75);
 				border: 0px;
-				padding: 5px 10px;
+
 				cursor: pointer;
 			}
 			button:hover {
@@ -111,9 +120,12 @@
 			var mouse = new THREE.Vector2(), INTERSECTED;
 			var raycaster = new THREE.Raycaster();
 			var controls;
-			var scene;
 			var objects = [];
 			var targets = { table: [], sphere: [], helix: [], grid: [] };
+			var backdrop;
+			var backdropId = "backdrop_board0";
+
+			var innerScreenWidth, innerScreenHeight;
 
 			var container = document.getElementById('container');
 
@@ -142,61 +154,116 @@
 				scene = new THREE.Scene();
 				var tiles = event.board.tiles;
 
+				//create the invisible 10x10 targets
+				for (var i = 0; i < 10; i++){
+					for (var j = 0; j < 10; j++){
+						var element = document.createElement( 'div' );
+						//element.style.background = "none";
+						//element.classList.add("silverFrame");
+						var w = 300;
+						var h = (w/3)*4;
+						element.style.width = w + "px";
+						element.style.height = h + "px";
+
+						var object = new THREE.CSS3DObject( element );
+
+						object.position.x = (j-5)*(w*1.1);
+						object.position.y = -(i-5)*(h*1.1);
+						object.position.z = -7000;
+						scene.add( object );
+						targets.table.push( object );
+					}
+				}
+
+				// create the actual tiles
 				for ( var i = 0; i < tiles.length; i++ ) {
 
+					//create the div element
 					var element = document.createElement( 'div' );
-
 					element.classList.add(tiles[i].hash);
 					element.classList.add("element");
-
-					element.style.backgroundColor = 'rgba(0,127,127,' + ( Math.random() * 0.5 + 0.25 ) + ')';
-					var w = window.innerWidth/11;
+					element.style.backgroundColor = 'rgba(127,127,127,1)';
+					var w = 300;
 					var h = (w/3)*4; // give tiles a 3x4 ratio proportional to screen size
 					element.style.width = w + "px";
 					element.style.height = h + "px";
 
+					//put the image inside of it
 					var details = document.createElement( 'img' );
 					details.className = 'details';
-					details.style.width = "95%";
-					details.style.height = "95%";
+					details.style.width = "85%";
+					details.style.height = "80%";
 					details.src = "http://localhost:4000" + tiles[i].image_thumb;
 					details.zIndex = 1;
 					details.position = "static"
 					element.appendChild( details );
 
+					//add a bid button to the bottom
+					var bidButton = document.createElement('div');
+					bidButton.classList.add("artInfoPanel");
+					bidButton.style.width = "100%";
+					bidButton.style.height= "15%";
+					bidButton.style.border= "1px solid rgba(0,255,255,0.95)";
+					element.appendChild(bidButton);
+
+					//create a 3d object somewhere in space for the div to go in
 					var object = new THREE.CSS3DObject( element );
-					object.position.x = tiles[i].x * 1000 - 2000;
-					object.position.y = tiles[i].y * 1000 - 2000;
-					object.position.z = tiles[i].z - 100000;
+					object.position.x = tiles[i].x * 1000 - 3000;
+					object.position.y = tiles[i].y * 1000 + 22000;
+					object.position.z = tiles[i].z + 100000;
+
+					//push the object onto the scene, and into the objects array.
+					//Tiles will travel to spots in Targets array on load
 					scene.add( object );
 					objects.push( object );
 					element.object = object;
+
+					//Set up a click handler for each one that zoomes in closer.
 					(function (_element) { //turn click events on elements into cameraZoom events
 						_element.addEventListener( 'click', function ( event ) {
-							/*var event = new Event("cameraZoom");
-							var bid = document.createElement('button');
-							bid.className = 'bidButton';
-							bid.style.width = "20%";
-							bid.style.height = "20%";
-							bid.value = "bid"
-							bid.borderRadius = "50%"
-							_element.appendChild( bid );*/
-
-							event.destination = new THREE.Vector3( _element.object.position.x, _element.object.position.y, _element.object.position.z+600);
+							var event = new Event("cameraZoom");
+							event.destination = new THREE.Vector3( _element.object.position.x, _element.object.position.y, _element.object.position.z+2000);
 							window.dispatchEvent(event);
 							//transform( targets.grid, 2000 );
 						}, false );
         	})(element);
 
 					var object = new THREE.Object3D();
-					var stepsX= window.innerWidth/10;
-					var stepsY= 150;
+					var stepsX = window.innerWidth/10;
+					var stepsY = window.innerHeight/10+20;
+					object.position.x = (tiles[i].x * 5)*(300*1.1);
+					object.position.y = (tiles[i].y * 5)*(400*1.1);
+					console.log(stepsX);
+					//scene.add( makeBackdrop(innerScreenWidth, innerScreenHeight, "red") );
+					//object.position.x = tiles[i].x * stepsX //tiles[i].x * 300 - 1000; //-window.innerWidth;
+					//object.position.x = (tiles[i].x-5) * stepsX;
+					//object.position.y = (tiles[i].y+5) * stepsY; //-window.innerHeight;
+					object.position.z = -7000; //-window.innerHeight;
+					//targets.table.push( object );
+				}
 
-					object.position.x = tiles[i].x * stepsX //tiles[i].x * 300 - 1000; //-window.innerWidth;
-					object.position.y = tiles[i].y * stepsY; //-window.innerHeight;
-					object.position.z = tiles[i].z * 600; //-window.innerHeight;
-					targets.table.push( object );
-					makeBackdrop();
+				//Add the blank frames
+				for ( var i = tiles.length; i < 100; i++ ) {
+					var element = document.createElement( 'div' );
+					element.classList.add("silverFrame");
+					//element.classList.add("element");
+					element.style.backgroundColor = 'rgba(127,127,127,1)';
+
+					var w = 300;
+					var h = (w/3)*4; // give tiles a 3x4 ratio proportional to screen size
+					element.style.width = w + "px";
+					element.style.height = h + "px";
+
+					var object = new THREE.CSS3DObject( element );
+					//object.position.x = tiles[i].x * 1000 - 3000;
+					//object.position.y = tiles[i].y * 1000 + 22000;
+					//object.position.z = tiles[i].z + 100000;
+
+					object.element = element;
+					scene.add( object );
+					objects.push( object );
+
+
 				}
 
 				// sphere
@@ -207,7 +274,6 @@
 					var object = new THREE.Object3D();
 					object.position.setFromSphericalCoords( 800, phi, theta );
 					object.position.x = object.position.x + (window.innerWidth/2);
-
 
 					vector.copy( object.position ).multiplyScalar( 2 );
 					object.lookAt( vector );
@@ -247,19 +313,7 @@
 				//
 				window.addEventListener( 'resize', onWindowResize, false );
 			}
-			function initCamera(){
-				camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.z = 2800;
-				camera.position.x = camera.position.x + (window.innerWidth/2) + 100;
-				cameraStart = new THREE.Vector3( camera.position.x, camera.position.y, camera.position.z );
 
-				camera.addEventListener('goto', function( event ) {
-					camera.lookAt(event.object);
-					camera.updateProjectionMatrix();
-				})
-
-				return camera;
-			}
 
 			function transform( targets, duration ) {
 				TWEEN.removeAll();
@@ -281,25 +335,70 @@
 					.start();
 			}
 
+			function initCamera(){
+				var innerScreenAR = (16/9); //must be larger than 1
+				//console.log("innerScreenAR: " + innerScreenAR);
 
-			function makeBackdrop() {
+				innerScreenWidth = window.innerWidth;
+				//console.log("innerScreenWidth: " + innerScreenWidth);
+				innerScreenHeight = innerScreenWidth / innerScreenAR;
+				//console.log("innerScreenHeight: " + innerScreenHeight);
+
+				camera = new THREE.PerspectiveCamera( 18, window.innerWidth/window.innerHeight, 1, 10000 );
+				camera.position.z = 10000;
+				//camera.position.x = camera.position.x + innerScreenWidth*2;
+				//camera.position.x = camera.position.x + innerScreenWidth/2;
+				//camera.position.y = camera.position.y + innerScreenHeight/2;
+
+				cameraStart = new THREE.Vector3( camera.position.x, camera.position.y, camera.position.z );
+
+				camera.addEventListener('goto', function( event ) {
+					camera.lookAt(event.object);
+					camera.updateProjectionMatrix();
+				})
+
+				return camera;
+			}
+
+
+			function resizeBackdrop(){
+				var w = innerScreenWidth;
+				var h = innerScreenHeight;
+
+				var element = backdrop.element;
+				console.log("element" );
+				console.log(document.getElementById(element.id));
+				element.parentNode.removeChild(element);
+				console.log(document.getElementById(element.id));
+
+				scene.remove(backdrop);
+
+				var color = "hsl(0, 60%, 50%)";
+				object = makeBackdrop(w, h, color);
+				//object.element.style.width = w + "px";
+				//object.element.style.height = h + "px";
+				object.element.style.bordercolor = "3px solid red";
+				object.width = w;
+				object.height = h;
+				scene.add(object);
+			}
+
+			function makeBackdrop(w, h, color) {
 				var element = document.createElement( 'div' );
-				element.className = 'element';
-				element.style.backgroundColor = 'rgba(0,127,127,' + ( Math.random() * 0.5 + 0.25 ) + ')';
-
-				// give tiles a 3x4 ratio proportional to screen size
-				var w = window.innerWidth*2;
-				var h = window.innerHeight*2;
+				element.id= backdropId;
+				console.log(w + "," + h);
 				element.style.width = w + "px";
 				element.style.height = h + "px";
-				element.style.border = "1px solid white"
+				element.style.border = "3px solid " + color;
 
 				var object = new THREE.CSS3DObject( element );
 
-				object.position.x = w/4;
-				object.position.y = h/8;
-				object.position.z = 0;
-				//scene.add( object );
+				object.position.x = 0;
+				object.position.y = 0;
+				object.position.z = 6500;
+				object.name = element.id;
+				backdrop = object;
+				return backdrop;
 			}
 
 			function cameraZoom(e){
@@ -322,9 +421,10 @@
 			}
 
 			function onWindowResize() {
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
+				camera = initCamera();
+				//resizeBackdrop();
 				renderer.setSize( window.innerWidth, window.innerHeight );
+				camera.updateProjectionMatrix();
 				render();
 			}
 			function animate() {
