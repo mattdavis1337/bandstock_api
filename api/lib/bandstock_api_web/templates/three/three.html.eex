@@ -173,16 +173,14 @@
 					element.object = object;
 					(function (_element) { //turn click events on elements into cameraZoom events
 						_element.addEventListener( 'click', function ( event ) {
-							var event = new Event("cameraZoom");
+							/*var event = new Event("cameraZoom");
 							var bid = document.createElement('button');
 							bid.className = 'bidButton';
 							bid.style.width = "20%";
 							bid.style.height = "20%";
 							bid.value = "bid"
 							bid.borderRadius = "50%"
-
-
-							_element.appendChild( bid );
+							_element.appendChild( bid );*/
 
 							event.destination = new THREE.Vector3( _element.object.position.x, _element.object.position.y, _element.object.position.z+600);
 							window.dispatchEvent(event);

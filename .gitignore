@@ -8,6 +8,7 @@ api/*.ez
 api/.DS_Store
 
 
+
 # Generated on crash by the VM
 erl_crash.dump
 
