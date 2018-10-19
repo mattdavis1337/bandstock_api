@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>P.E.A.C.E. by Piece - Hybrid Retail Auction</title>
+		<title>Bandstock</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
@@ -26,7 +26,7 @@
 			#info {
 				position: absolute;
 				width: 100%;
-				border: 1px solid white;
+				border-top: 1px solid white;
 				color: #ffffff;
 				padding: 5px;
 				bottom: 5%;
@@ -129,14 +129,10 @@
 
 		<div id="container"></div>
 
-		<div class="myFooter container">
+		<div class="container">
 			<div class="row">
 				<div id="info" class="col s12">
-					P.E.A.C.E. by Piece - Hybrid Retail Auction
-					<br />
-					People Evolve as Consciousness Expands
-					<br />
-					Waging Peace One Piece at a Time
+					<img width="33%" src="<%= static_path(@conn, "/images/bandstock_logo.png") %>">
 				</div>
 			</div>
 			<div class="row">
