@@ -9,6 +9,7 @@ defmodule BandstockApiWeb.TileController do
 
   def index(conn, _params) do
     IO.puts("In Index");
+    IO.inspect(BandstockApi.Identicon.main("matt"));
 
     tiles = Game.list_tiles()
     render(conn, "index.json", tiles: tiles)

@@ -4,6 +4,11 @@
 		<title>P.E.A.C.E. by Piece - Hybrid Retail Auction</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+
 		<style>
 			html, body {
 				height: 100%;
@@ -17,29 +22,38 @@
 			a {
 				color: #ffffff;
 			}
+
 			#info {
 				position: absolute;
 				width: 100%;
+				border: 1px solid white;
 				color: #ffffff;
 				padding: 5px;
-				bottom: 8%;
+				bottom: 5%;
 				font-family: Monospace;
 				font-size: 24px;
 				font-weight: bold;
 				text-align: center;
-				border: 1px solid white;
 				z-index: 1;
+				background: black;
 			}
 			#menu {
 				position: absolute;
-				bottom: 5%;
+				bottom: 0%;
 				width: 100%;
 				text-align: center;
+			}
+			.container{
+				width: 100%;
+				max-width:100%;
+				border: 3px solid white;
+			}
+			.myFooter{
+				border: 1px solid white;
 			}
 			.element {
 				width: 225px;
 				height: 300px;
-				margin: 10px;
 				text-align: center;
 				cursor: default;
 			}
@@ -88,17 +102,19 @@
 			button {
 				color: rgba(127,255,255,0.75);
 				background: transparent;
-				outline: 1px solid rgba(127,255,255,0.75);
-				border: 0px;
 
+				border: 0px;
 				cursor: pointer;
+				border-radius: 50%;
 			}
 			button:hover {
 				background-color: rgba(0,255,255,0.5);
+				border-radius: 50%;
 			}
 			button:active {
 				color: #000000;
 				background-color: rgba(0,255,255,0.75);
+				border-radius: 50%;
 			}
 		</style>
 	</head>
@@ -108,13 +124,30 @@
     <script src="<%= static_path(@conn, "/js/tween.min.js") %>"></script>
     <script src="<%= static_path(@conn, "/js/TrackballControls.js") %>"></script>
     <script src="<%= static_path(@conn, "/js/CSS3DRenderer.js") %>"></script>
+		<script src="<%= static_path(@conn, "/js/dat.gui.min.js") %>"></script>
 
 
 		<div id="container"></div>
-		<div id="info">P.E.A.C.E. by Piece - Hybrid Retail Auction <a href="http://pxp.thepeacemuseum.org" target="_blank" rel="noopener">info</a>.</div>
-		<div id="menu">
-			<button id="table">TABLE</button>
-			<button id="bid">BID</button>
+
+		<div class="myFooter container">
+			<div class="row">
+				<div id="info" class="col s12">
+					P.E.A.C.E. by Piece - Hybrid Retail Auction
+					<br />
+					People Evolve as Consciousness Expands
+					<br />
+					Waging Peace One Piece at a Time
+				</div>
+			</div>
+			<div class="row">
+				<div id="menu" class="col s1" >
+					<button id="table"><i class="material-icons">home</i></button>
+					<button id="bid"><i class="material-icons">attach_money</i></button>
+					<button id="sphere"><i class="material-icons">blur_on</i></button>
+				</div>
+			</div>
+		</div>
+
 		</div>
 
 		<script>
@@ -132,9 +165,13 @@
 
 			var container = document.getElementById('container');
 
+
+
+//Event Listenrs
 			window.addEventListener( 'mousedown', onDocumentMouseDown, false );
 			window.addEventListener( 'initBoard', initBoard, false);
 			window.addEventListener( 'cameraZoom', cameraZoom, false);
+			window.addEventListener( 'bidPressed', bidPressed, false);
 
 			//init();
 
@@ -203,14 +240,12 @@
 					details.position = "static"
 					element.appendChild( details );
 
-					//add a bid button to the bottom
+					//add a info pannel to the bottom of each frame
 					var artInfo = document.createElement('div');
 					artInfo.classList.add("artInfoPanel");
 					artInfo.style.width = "98%";
 					artInfo.style.height= "14%";
 					artInfo.style.margin= "auto";
-					//bidButton.style.paddingTop= "2%"
-					//bidButton.style.border= "1px solid rgba(0,255,255,0.95)";
 					element.appendChild(artInfo);
 
 					//create a 3d object somewhere in space for the div to go in
@@ -279,7 +314,7 @@
 					var phi = Math.acos( -1 + ( 2 * i ) / l );
 					var theta = Math.sqrt( l * Math.PI ) * phi;
 					var object = new THREE.Object3D();
-					object.position.setFromSphericalCoords( 800, phi, theta );
+					object.position.setFromSphericalCoords( 1500, phi, theta );
 					object.position.x = object.position.x + (window.innerWidth/2);
 
 					vector.copy( object.position ).multiplyScalar( 2 );
@@ -292,19 +327,23 @@
 				document.getElementById( 'container' ).appendChild( renderer.domElement );
 
 
+				var button = document.getElementById( 'bid' );
+				button.addEventListener( 'click', function ( event ) {
+					window.dispatchEvent(new Event("bidPressed"));
+					//
+				}, false );
+
 				var button = document.getElementById( 'table' );
 				button.addEventListener( 'click', function ( event ) {
 					transform(targets.table, 500);
-					var event = new Event("cameraZoom");
-
-		      event.destination = new THREE.Vector3(cameraStart.x, cameraStart.y, cameraStart.z);
-		      window.dispatchEvent(event);
+					zoomTo(new THREE.Vector3(cameraStart.x, cameraStart.y, cameraStart.z));
 					//
 				}, false );
 				var button = document.getElementById( 'sphere' );
 
 				if(button){button.addEventListener( 'click', function ( event ) {
 					transform( targets.sphere, 2000 );
+					zoomHome();
 				}, false );}
 
 				var button = document.getElementById( 'helix' );
@@ -352,26 +391,19 @@
 				//console.log("innerScreenAR: " + innerScreenAR);
 
 				innerScreenWidth = window.innerWidth;
-				//console.log("innerScreenWidth: " + innerScreenWidth);
 				innerScreenHeight = innerScreenWidth / innerScreenAR;
-				//console.log("innerScreenHeight: " + innerScreenHeight);
+
 
 				camera = new THREE.PerspectiveCamera( 18, window.innerWidth/window.innerHeight, 1, 10000 );
-				camera.position.z = 10000;
+				camera.position.z = 13000;
 				//camera.position.x = camera.position.x + innerScreenWidth*2;
 				//camera.position.x = camera.position.x + innerScreenWidth/2;
 				//camera.position.y = camera.position.y + innerScreenHeight/2;
 
 				cameraStart = new THREE.Vector3( camera.position.x, camera.position.y, camera.position.z );
 
-				camera.addEventListener('goto', function( event ) {
-					camera.lookAt(event.object);
-					camera.updateProjectionMatrix();
-				})
-
 				return camera;
 			}
-
 
 			function resizeBackdrop(){
 				var w = innerScreenWidth;
@@ -413,6 +445,21 @@
 				return backdrop;
 			}
 
+
+//Camera Zooms
+
+
+			function zoomTo(vector3){
+				var event = new Event("cameraZoom");
+				event.destination = vector3;
+				window.dispatchEvent(event);
+			}
+
+			function zoomHome(){
+				zoomTo(new THREE.Vector3(cameraStart.x, cameraStart.y, cameraStart.z));
+			}
+
+			//cameraZoom Event Handler//
 			function cameraZoom(e){
 				console.log('camera moving from:')
 				console.log(camera.position)
@@ -432,6 +479,50 @@
 						console.log(camera.position)}).start();
 			}
 
+			function bidPressed() {
+				var element = document.createElement( 'div' );
+				element.classList.add("element");
+				element.classList.add("silverFrame");
+				//element.style.borderColor = 'rgba('+ i*2 + ',127,127,1)';
+				var w = 400;
+				var h = 300; // give tiles a 3x4 ratio proportional to screen size
+				element.style.width = w + "px";
+				element.style.height = h + "px";
+
+				var form = document.createElement('form')
+				form.name='myForm';
+				form.method='POST';
+				form.action='http://localhost:4000/gallery';
+
+				var input=document.createElement('INPUT');
+				input.type='TEXT';
+				input.name='bidInput';
+				input.value='0';
+				form.appendChild(input);
+
+				element.appendChild(form);
+
+				//add a info pannel to the bottom of each frame
+				var artInfo = document.createElement('div');
+				artInfo.classList.add("artInfoPanel");
+				artInfo.style.width = "98%";
+				artInfo.style.height= "14%";
+				artInfo.style.margin= "auto";
+				element.appendChild(artInfo);
+
+				//create a 3d object somewhere in space for the div to go in
+				var object = new THREE.CSS3DObject( element );
+				object.position.x = 0;
+				object.position.y = 0;
+				object.position.z = 0;
+
+				//push the object onto the scene, and into the objects array.
+				//Tiles will travel to spots in Targets array on load
+				scene.add( object );
+
+				zoomTo(new THREE.Vector3(object.position.x, object.position.y, object.position.z+2000));
+			}
+
 			function onWindowResize() {
 				camera = initCamera();
 				//resizeBackdrop();
@@ -443,6 +534,7 @@
 				requestAnimationFrame( animate );
 				TWEEN.update();
 				render();
+				console.log("animating!");
 				//controls.update();
 			}
 			function render() {

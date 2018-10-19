@@ -59,7 +59,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
   let boardSphereButton       = document.querySelector("#sphere")
   let boardClientOutput       = document.querySelector("#board-output")
 
+  let bidButton = document.querySelector("#bid")
+
   boardTableButton.addEventListener( 'click', function ( event ) {
+    console.log("pushing board_input")
     channel.push("board_input", {body: "boardInput Table"})
   }, false );
 
@@ -68,6 +71,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
     channel.push("board_input", {body: "boardInput Sphere"})
   }, false );
   }
+
+  if(bidButton) {
+    bidButton.addEventListener( 'click', function ( event ) {
+    console.log("bid button")
+  }, false);}
 
   channel.on("board_output", payload => {
     console.log()

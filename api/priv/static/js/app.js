@@ -1665,7 +1665,11 @@ require.register("phoenix_html/priv/static/phoenix_html.js", function(exports, r
 })();
   })();
 });
-require.register("js/app.js", function(exports, require, module) {
+require.register("js/14ktiles.js", function(exports, require, module) {
+"use strict";
+});
+
+;require.register("js/app.js", function(exports, require, module) {
 "use strict";
 
 require("phoenix_html");
@@ -1745,13 +1749,22 @@ document.addEventListener("DOMContentLoaded", function (event) {
   var boardSphereButton = document.querySelector("#sphere");
   var boardClientOutput = document.querySelector("#board-output");
 
+  var bidButton = document.querySelector("#bid");
+
   boardTableButton.addEventListener('click', function (event) {
+    console.log("pushing board_input");
     channel.push("board_input", { body: "boardInput Table" });
   }, false);
 
   if (boardSphereButton) {
     boardSphereButton.addEventListener('click', function (event) {
       channel.push("board_input", { body: "boardInput Sphere" });
+    }, false);
+  }
+
+  if (bidButton) {
+    bidButton.addEventListener('click', function (event) {
+      console.log("bid button");
     }, false);
   }
 

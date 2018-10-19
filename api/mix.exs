@@ -40,10 +40,12 @@ defmodule BandstockApi.Mixfile do
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
+      {:color_utils, "0.2.0"},
       {:cowboy, "~> 1.0"},
       {:cors_plug, "~> 1.5"},
       {:arc, "~> 0.10.0"},
-      {:arc_ecto, "~> 0.10.0"}
+      {:arc_ecto, "~> 0.10.0"},
+      {:egd, github: "erlang/egd"},
     ]
   end
 
