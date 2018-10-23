@@ -127,7 +127,9 @@
 		<script src="<%= static_path(@conn, "/js/dat.gui.min.js") %>"></script>
 
 
-		<div id="container"></div>
+		<div id="container">
+
+		</div>
 
 		<div class="container">
 			<div class="row">

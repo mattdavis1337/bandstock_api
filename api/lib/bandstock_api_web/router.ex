@@ -2,7 +2,7 @@ defmodule BandstockApiWeb.Router do
   use BandstockApiWeb, :router
 
   pipeline :three_layout do
-    plug :put_layout, {BandstockApiWeb.ThreeView, :three}
+    plug :put_layout, {BandstockApiWeb.ThreeView, :main}
   end
 
   pipeline :browser do
