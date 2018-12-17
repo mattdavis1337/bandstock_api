@@ -8,12 +8,13 @@ defmodule BandstockApiWeb.TileController do
   action_fallback BandstockApiWeb.FallbackController
 
   def index(conn, _params) do
-    IO.puts("In Index");
-    IO.inspect(BandstockApi.Identicon.main("matt"));
+
+
 
     tiles = Game.list_tiles()
     render(conn, "index.json", tiles: tiles)
   end
+
 
   def new(conn, _params) do
     changeset = Game.change_tile(%Tile{})

@@ -175,10 +175,40 @@ defmodule BandstockApi.Game do
 
   """
   def create_board(attrs \\ %{}) do
+    IO.inspect("in create_board")
+    IO.inspect(attrs);
     %Board{}
     |> Board.changeset(attrs)
     |> Repo.insert()
   end
+
+  def gen_board(attrs \\ %{}) do
+      IO.inspect("in gen_board");
+      IO.inspect(attrs)
+      BandstockApi.Identicon.main("matt");
+      create_board(%{"name" => "Generated Board" <> random_string(5)})
+  end
+
+  # def gen_tile(%{"tile" => tile_params}) do
+  #   IO.inspect("in tile_controller.create")
+  #   board = Game.get_board!(1) #MFD TODO: put everything on board 1 until we're ready to get fancy
+  #
+  #   with  {:ok, tileimage} <- get_tileimage(tile_params),
+  #         {:ok, filename} <- parse_filename(tileimage),
+  #         #{:ok, name} <- parse_file_extension(filename),
+  #         {:ok, tile_params} <- parse_tile_params(tile_params, tileimage),
+  #         {:ok, %Tile{} = tile} <- Game.create_tile(tile_params),
+  #         {:ok, %Board{} = board} <- Game.link_tile_and_board(tile, board)
+  #   do
+  #     conn
+  #     |> put_status(:created)
+  #     |> put_resp_header("location", tile_path(conn, :show, tile))
+  #     |> render("show.json", tile: tile)
+  #   else
+  #     :error -> :error
+  #   end
+  # end
+
 
   @doc """
   Updates a board.

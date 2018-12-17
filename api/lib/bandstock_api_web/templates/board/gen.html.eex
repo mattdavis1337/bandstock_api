@@ -1,0 +1,3 @@
+<h2>Gen Board</h2>
+
+<%= render "genform.html", Map.put(assigns, :action, board_path(@conn, :gen)) %>

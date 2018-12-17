@@ -19,6 +19,10 @@ defmodule BandstockApi.GameTest do
       tile
     end
 
+    test "gen_board/0 runs without crashing" do
+      Game.gen_board(%{})
+    end
+
     test "list_tiles/0 returns all tiles" do
       tile = tile_fixture()
       assert Game.list_tiles() == [tile]

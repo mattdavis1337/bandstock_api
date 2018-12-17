@@ -26,6 +26,8 @@ defmodule BandstockApiWeb.Router do
   scope "/", BandstockApiWeb do
     pipe_through [:browser] # Use the default browser stack
     get "/boards/new", BoardController, :new
+    get "/boards/gen", BoardController, :gen
+    post "/boards/gen", BoardController, :gen_action
     get "/tiles/new", TileController, :new
   end
 

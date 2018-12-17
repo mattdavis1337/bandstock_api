@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bandstock</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+
+		<style>
+			html, body {
+				height: 100%;
+			}
+			body {
+				background-color: #000000;
+				margin: 0;
+				font-family: Helvetica, sans-serif;;
+				overflow: hidden;
+			}
+			a {
+				color: #ffffff;
+			}
+
+			#info {
+				position: absolute;
+				width: 100%;
+				border-top: 1px solid white;
+				color: #ffffff;
+				padding: 5px;
+				bottom: 5%;
+				font-family: Monospace;
+				font-size: 24px;
+				font-weight: bold;
+				text-align: center;
+				z-index: 1;
+				background: black;
+			}
+			#menu {
+				position: absolute;
+				bottom: 0%;
+				width: 100%;
+				text-align: center;
+			}
+			.container{
+				width: 100%;
+				max-width:100%;
+				border: 3px solid white;
+			}
+			.myFooter{
+				border: 1px solid white;
+			}
+			.element {
+				width: 225px;
+				height: 300px;
+				text-align: center;
+				cursor: default;
+			}
+			.element:hover {
+				box-shadow: 0px 0px 27px 10px rgba(255,200,255,0.9);
+			}
+				.element .number {
+					position: absolute;
+					top: 20px;
+					right: 20px;
+					font-size: 12px;
+					color: rgba(127,255,255,0.75);
+				}
+				.element .symbol {
+					position: absolute;
+					top: 40px;
+					left: 0px;
+					right: 0px;
+					font-size: 60px;
+					font-weight: bold;
+					color: rgba(255,255,255,0.75);
+					text-shadow: 0 0 10px rgba(0,255,255,0.95);
+				}
+				.element .details {
+					margin: 2.5%;
+					left: 0px;
+					right: 0px;
+					font-size: 12px;
+					color: rgba(255,127,255,0.75);
+				}
+
+				.artInfoPanel{
+					border: 0px solid black;
+					background-color: rgba(255,255,255,0.35);
+					box-shadow: 0px 3px 2px rgba(75,75,75,0.75);
+				}
+
+				.artInfoPanel:hover{
+					box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
+					background-color: rgba(0,255,255,0.95);
+				}
+
+				.silverFrame {
+					border: 7px solid rgba(127,127,127,0.85);
+				}
+			button {
+				color: rgba(127,255,255,0.75);
+				background: transparent;
+
+				border: 0px;
+				cursor: pointer;
+				border-radius: 50%;
+			}
+			button:hover {
+				background-color: rgba(0,255,255,0.5);
+				border-radius: 50%;
+			}
+			button:active {
+				color: #000000;
+				background-color: rgba(0,255,255,0.75);
+				border-radius: 50%;
+			}
+		</style>
+	</head>
+	<body>
+		<script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <script src="<%= static_path(@conn, "/js/three.min.js") %>"></script>
+    <script src="<%= static_path(@conn, "/js/tween.min.js") %>"></script>
+    <script src="<%= static_path(@conn, "/js/TrackballControls.js") %>"></script>
+    <script src="<%= static_path(@conn, "/js/CSS3DRenderer.js") %>"></script>
+		<script src="<%= static_path(@conn, "/js/dat.gui.min.js") %>"></script>
+
+    <script>
+      function coloringBook(){
+        console.log('coloring book');
+          new THREE.TextureLoader().load("<%= static_path(@conn, "/images/vortex_small.png") %>",
+            (tex)=>{
+            console.log('loading');
+            console.log(tex);
+            var img = tex.image;
+            var canv = document.createElement('canvas');
+            var width = canv.width = img.width+2;
+            canv.top = 0;
+            canv.width=1000;
+            var height = canv.height = img.height+2;
+            canv.height=1000;
+            var ctx = canv.getContext('2d');
+            ctx.clearRect(0,0,width,height);
+            ctx.drawImage(img,1,1);
+            canv.style.position = 'absolute';
+            canv.style.border = "1px solid white"
+            //canv.style.left = canv.style.top = '200px';
+            var imgd = ctx.getImageData(0,0, width, height);
+
+
+            var pix = imgd.data;
+            var ints = new Array(width*height);
+            var islandVal = 1;
+            for(var i=width+1,pi=i*4; i<ints.length-(width+1); i++,pi+=4){
+              //console.log('i: ' + i + "ints[" + i + "]:" + ints[i] + "pix[" + pi + "]:"+ pix[pi]);
+              ints[i]=(pix[pi]=pix[pi+1]=pix[pi+2]=pix[pi]<240?0:255)?islandVal++:0; //Threshold the image to black and white, and give each non-black pixel an incrementing value
+            }
+
+            var didSwap;
+            var loopCt=0;
+            var expand=(px,neighbor)=>neighbor?(neighbor<px?neighbor:px):px; //if neighbor is non-black and < this pixels id, copy the neighbor into this pixel
+            do {
+                var nswap = 0;
+                for(var i=1+width;i<ints.length-(width+1);i++){
+                    var px=ints[i];
+                    if(px){
+                        px=expand(px,ints[i-1]);
+                        px=expand(px,ints[i-width]);
+                        px=expand(px,ints[i+width]);
+                        px=expand(px,ints[i+1]);
+                        if(px!=ints[i]){ints[i]=px;nswap++;} //If we swapped with any neighbors, copy the new value back, and increment nswap
+                    }
+                }
+                loopCt++;
+            } while(nswap>0);
+
+            var ngroups=0;
+            var groupMap = {}
+            colorsTeal = [{r: 24, g: 125, b: 161}, {r: 28, g:149, b:189}, {r: 33, g: 176, b: 219},  {r:41, g:209, b:255 }]
+            colorsPurp = [{r: 93, g:15, b:97}, {r: 129, g:22, b:135}, {r: 159, g:27, b:166},  {r:200, g:33, b:209 }]
+
+            var rbyte = ()=>{
+              return (Math.floor(Math.random() * 3)==0)?colorsPurp[Math.floor(Math.random() * 4)]:colorsTeal[Math.floor(Math.random() * 4)];
+            }
+            //var rbyte = ()=>(Math.random()*256)|0;
+            for(var i=0;i<ints.length;i++){
+              if(!groupMap[ints[i]]){
+                groupMap[ints[i]]={
+                  id:ngroups++,
+                  area:1,
+                  color:[rbyte().r,rbyte().g,rbyte().b]};
+                }
+                else
+                  groupMap[ints[i]].area++; //Count the number of groups, and assign each a random color..
+              }
+            for(var i=0;i<ints.length;i++){ //Set each pixel to the random color assigned to its group..
+                var pi=i*4;
+                var gp = groupMap[ints[i]];
+                pix[pi]=gp.color[0];
+                pix[pi+1]=gp.color[1];
+                pix[pi+2]=gp.color[2];
+                pix[pi+3]=gp.id<3?0:255;
+            }
+
+            var imgd = ctx.putImageData(imgd,0,0);//Write the pixels back to the canvas..
+            document.body.appendChild(canv);
+            console.log(`LoopCount:${loopCt} Number of groups:${ngroups}`)
+          })
+        }
+        coloringBook();
+    </script>
+
+		<div class="container">
+      <!--
+			<div class="row">
+				<div id="info" class="col s12">
+					<img width="33%" src="<%= static_path(@conn, "/images/bandstock_logo.png") %>">
+				</div>
+			</div>
+
+			<div class="row">
+				<div id="menu" class="col s1" >
+					<button id="table"><i class="material-icons">home</i></button>
+					<button id="bid"><i class="material-icons">attach_money</i></button>
+					<button id="sphere"><i class="material-icons">blur_on</i></button>
+				</div>
+			</div>
+    -->
+		</div>
+
+	</body>
+</html>

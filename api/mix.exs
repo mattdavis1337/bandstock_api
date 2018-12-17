@@ -46,6 +46,7 @@ defmodule BandstockApi.Mixfile do
       {:arc, "~> 0.10.0"},
       {:arc_ecto, "~> 0.10.0"},
       {:egd, github: "erlang/egd"},
+      {:libgraph, "~> 0.7"}
     ]
   end
 

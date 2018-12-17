@@ -12,15 +12,18 @@ defmodule BandstockApi.Application do
       supervisor(BandstockApi.Repo, []),
       # Start the endpoint when the application starts
       supervisor(BandstockApiWeb.Endpoint, []),
-      supervisor(BandstockEngine.Supervisor, []),
+      {Registry, keys: :unique, name: BandstockEngine.Registry},
+      BandstockEngine.TileGame.Supervisor,
       # Start your own worker by calling: BandstockApi.Worker.start_link(arg1, arg2, arg3)
       # worker(BandstockApi.Worker, [arg1, arg2, arg3]),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: BandstockApi.Supervisor]
+    opts = [strategy: :one_for_one, name: BandstockApi.TileGame.Supervisor]
     Supervisor.start_link(children, opts)
+
+    BandstockEngine.TileGame.Supervisor.find_or_start_game("mainboard");
   end
 
   # Tell Phoenix to update the endpoint configuration

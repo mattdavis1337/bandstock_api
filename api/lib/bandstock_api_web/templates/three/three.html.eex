@@ -97,7 +97,7 @@
 				}
 
 				.silverFrame {
-					border: 7px solid rgba(127,127,127,0.85);
+					border: 0px solid rgba(127,127,127,0.85);
 				}
 			button {
 				color: rgba(127,255,255,0.75);
@@ -181,8 +181,6 @@
     		mouse.y = 1 - 2 * ( event.clientY / window.innerHeight );
 				raycaster.setFromCamera(mouse, camera);
 				var intersects = raycaster.intersectObjects( scene.children );
-				console.log(mouse);
-				console.log(intersects);
 			}
 
 			function initBoard( event ) {
@@ -221,7 +219,6 @@
 					var element = document.createElement( 'div' );
 					element.classList.add(tiles[i].hash);
 					element.classList.add("element");
-					element.classList.add("silverFrame");
 					//element.style.borderColor = 'rgba('+ i*2 + ',127,127,1)';
 					var w = 300;
 					var h = (w/3)*4; // give tiles a 3x4 ratio proportional to screen size
@@ -231,26 +228,27 @@
 					//put the image inside of it
 					var details = document.createElement( 'img' );
 					details.className = 'details';
-					details.style.width = "85%";
-					details.style.height = "80%";
+					details.style.width = "100%";
+					details.style.height = "100%";
 					details.src = "http://localhost:4000" + tiles[i].image_thumb;
 					details.zIndex = 1;
 					details.position = "static"
 					element.appendChild( details );
 
 					//add a info pannel to the bottom of each frame
-					var artInfo = document.createElement('div');
+					/*var artInfo = document.createElement('div');
 					artInfo.classList.add("artInfoPanel");
 					artInfo.style.width = "98%";
 					artInfo.style.height= "14%";
 					artInfo.style.margin= "auto";
-					element.appendChild(artInfo);
+					element.appendChild(artInfo);*/
 
 					//create a 3d object somewhere in space for the div to go in
 					var object = new THREE.CSS3DObject( element );
 					object.position.x = tiles[i].x * 1000 - 3000;
 					object.position.y = tiles[i].y * 1000 + 22000;
 					object.position.z = tiles[i].z + 100000;
+					object.tile = tiles[i];
 
 					//push the object onto the scene, and into the objects array.
 					//Tiles will travel to spots in Targets array on load
@@ -267,19 +265,6 @@
 							//transform( targets.grid, 2000 );
 						}, false );
         	})(element);
-
-					var object = new THREE.Object3D();
-					var stepsX = window.innerWidth/10;
-					var stepsY = window.innerHeight/10+20;
-					object.position.x = (tiles[i].x * 5)*(300*1.1);
-					object.position.y = (tiles[i].y * 5)*(400*1.1);
-					console.log(stepsX);
-					//scene.add( makeBackdrop(innerScreenWidth, innerScreenHeight, "red") );
-					//object.position.x = tiles[i].x * stepsX //tiles[i].x * 300 - 1000; //-window.innerWidth;
-					//object.position.x = (tiles[i].x-5) * stepsX;
-					//object.position.y = (tiles[i].y+5) * stepsY; //-window.innerHeight;
-					object.position.z = -7000; //-window.innerHeight;
-					//targets.table.push( object );
 				}
 
 				//Add the blank frames
@@ -368,7 +353,10 @@
 				TWEEN.removeAll();
 				for ( var i = 0; i < objects.length; i ++ ) {
 					var object = objects[ i ];
-					var target = targets[ i ];
+					if(object.tile){
+						var loc = ((object.tile.y-1)*10)+ (object.tile.x-1);
+
+					var target = targets[ loc ];
 					new TWEEN.Tween( object.position )
 						.to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
 						.easing( TWEEN.Easing.Cubic.Out )
@@ -382,12 +370,11 @@
 					.to( {}, duration * 2 )
 					.onUpdate( render )
 					.start();
+					}
 			}
 
 			function initCamera(){
 				var innerScreenAR = (16/9); //must be larger than 1
-				//console.log("innerScreenAR: " + innerScreenAR);
-
 				innerScreenWidth = window.innerWidth;
 				innerScreenHeight = innerScreenWidth / innerScreenAR;
 
@@ -408,10 +395,7 @@
 				var h = innerScreenHeight;
 
 				var element = backdrop.element;
-				console.log("element" );
-				console.log(document.getElementById(element.id));
 				element.parentNode.removeChild(element);
-				console.log(document.getElementById(element.id));
 
 				scene.remove(backdrop);
 
@@ -428,7 +412,7 @@
 			function makeBackdrop(w, h, color) {
 				var element = document.createElement( 'div' );
 				element.id= backdropId;
-				console.log(w + "," + h);
+
 				element.style.width = w + "px";
 				element.style.height = h + "px";
 				element.style.border = "3px solid " + color;
@@ -442,10 +426,6 @@
 				backdrop = object;
 				return backdrop;
 			}
-
-
-//Camera Zooms
-
 
 			function zoomTo(vector3){
 				var event = new Event("cameraZoom");
@@ -532,7 +512,6 @@
 				requestAnimationFrame( animate );
 				TWEEN.update();
 				render();
-				console.log("animating!");
 				//controls.update();
 			}
 			function render() {

@@ -1681,6 +1681,61 @@ var _socket2 = _interopRequireDefault(_socket);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 });
 
+;require.register("js/board_sockets.js", function(exports, require, module) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _phoenix = require("phoenix");
+
+var socket = new _phoenix.Socket("/socket", { params: { token: window.userToken } }); // NOTE: The contents of this file will only be executed if
+// you uncomment its entry in "assets/js/app.js".
+
+// To use Phoenix channels, the first step is to import Socket
+// and connect at the socket path in "lib/web/endpoint.ex":
+
+
+document.addEventListener("DOMContentLoaded", function (event) {
+  var channel = socket.channel("board:1", {});
+  var boardTestButton = document.querySelector("#boardTest");
+
+  boardTestButton.addEventListener('click', function (event) {
+    console.log("doing boardTest");
+    channel.push("board_test", { body: "board_test" });
+  }, false);
+
+  channel.on("board_output", function (payload) {
+    console.log();
+    console.log("board_test from server: " + payload.body);
+  });
+
+  channel.join().receive("ok", function (resp) {
+    console.log("Joined successfully in board_sockets.js", resp);
+    var event = new Event("initBoard");
+    event.board = resp.board;
+    window.dispatchEvent(event);
+  }).receive("error", function (resp) {
+    console.log("Unable to join", resp);
+  });
+});
+
+console.log('board_sockets');
+document.addEventListener('keydown', function (event) {
+  console.log('keydown');
+  switch (event.keyCode) {
+    case 78:
+      /*I*/
+      console.log("pushing board_test");
+      channel.push("board_test", { body: "board_test" });
+      break;
+  }
+}, false);
+
+exports.default = socket;
+});
+
 ;require.register("js/socket.js", function(exports, require, module) {
 "use strict";
 
@@ -1745,44 +1800,56 @@ socket.connect();
 
 document.addEventListener("DOMContentLoaded", function (event) {
   var channel = socket.channel("board:1", {});
-  var boardTableButton = document.querySelector("#table");
-  var boardSphereButton = document.querySelector("#sphere");
-  var boardClientOutput = document.querySelector("#board-output");
 
-  var bidButton = document.querySelector("#bid");
-
-  boardTableButton.addEventListener('click', function (event) {
-    console.log("pushing board_input");
-    channel.push("board_input", { body: "boardInput Table" });
-  }, false);
-
-  if (boardSphereButton) {
-    boardSphereButton.addEventListener('click', function (event) {
-      channel.push("board_input", { body: "boardInput Sphere" });
-    }, false);
-  }
-
-  if (bidButton) {
-    bidButton.addEventListener('click', function (event) {
-      console.log("bid button");
-    }, false);
-  }
+  channel.join().receive("ok", function (resp) {
+    console.log("Joined successfully!!", resp);
+  }).receive("error", function (resp) {
+    console.log("Unable to join", resp);
+  });
 
   channel.on("board_output", function (payload) {
     console.log();
     console.log("from server: " + payload.body);
+  });
 
-    //`[${Date()}] ${payload.body}`
-  });
-  channel.join().receive("ok", function (resp) {
-    console.log("Joined successfully", resp);
-    var event = new Event("initBoard");
-    event.board = resp.board;
-    window.dispatchEvent(event);
-  }).receive("error", function (resp) {
-    console.log("Unable to join", resp);
-  });
+  document.addEventListener('keydown', function (event) {
+    switch (event.keyCode) {
+      case 73:
+        /*I*/
+        console.log("pushing board_input");
+        channel.push("board_input", { body: "board_input body" });
+        break;
+    }
+  }, false);
 });
+
+/*
+
+event.board = resp.board;
+window.dispatchEvent(event);
+
+let boardTableButton        = document.querySelector("#table")
+let boardSphereButton       = document.querySelector("#sphere")
+let boardClientOutput       = document.querySelector("#board-output")
+
+let bidButton = document.querySelector("#bid")
+
+boardTableButton.addEventListener( 'click', function ( event ) {
+  console.log("pushing board_input")
+  channel.push("board_input", {body: "boardInput Table"})
+}, false );
+
+if(boardSphereButton){
+  boardSphereButton.addEventListener( 'click', function ( event ) {
+  channel.push("board_input", {body: "boardInput Sphere"})
+}, false );
+}
+
+if(bidButton) {
+  bidButton.addEventListener( 'click', function ( event ) {
+  console.log("bid button")
+}, false);}
+*/
 
 // Now that you are connected, you can join channels with a topic:
 
