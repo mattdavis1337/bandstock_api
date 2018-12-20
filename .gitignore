@@ -3,6 +3,7 @@ api/_build
 api/db
 api/deps
 api/*.ez
+bak
 
 .DS_Store
 api/.DS_Store

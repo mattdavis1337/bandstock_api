@@ -62,7 +62,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   channel.on("board_output", payload => {
     console.log()
-    console.log("from server: " + payload.body);
+    console.log("from server: " + payload.response);
+    console.log(payload);
   })
 
   document.addEventListener( 'keydown', function(event) {

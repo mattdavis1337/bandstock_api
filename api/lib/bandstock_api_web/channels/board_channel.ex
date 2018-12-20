@@ -30,6 +30,10 @@ defmodule BandstockApiWeb.BoardChannel do
     {:ok, reply, socket}
   end
 
+  def handle_out("board:" <> board_id, _params, socket) do
+
+  end
+
   def handle_in("board_input", %{"body" => body}, socket) do
     IO.puts("received board_input");
     #broadcast! socket, "board_output", %{body: body <> "-output"}

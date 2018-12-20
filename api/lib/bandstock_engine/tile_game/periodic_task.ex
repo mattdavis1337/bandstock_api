@@ -3,7 +3,7 @@ defmodule BandstockEngine.TileGame.PeriodicTask do
 
   alias BandstockEngine.TileGame
 
-  @timeout 999  #repeat every 1 second
+  @timeout 1000  #repeat every 1 second
 
   def start_link(opts \\ []) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
@@ -18,6 +18,8 @@ defmodule BandstockEngine.TileGame.PeriodicTask do
     {prevTime, elapsed} = state.clock;
     time = System.monotonic_time(:millisecond);
     TileGame.Engine.say(state.engine, {time, time-prevTime});
+
+    #TileGame.Engine.pulse(state.engine, {time, time-prevTime});
 
     #GenServer.cast(state.engine, {:say, {time, time-prevTime}})
     state = Map.replace!(state, :clock, {time, time-prevTime});
