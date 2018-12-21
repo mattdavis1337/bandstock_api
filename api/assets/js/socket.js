@@ -57,7 +57,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
   let channel = socket.channel("board:1", {});
 
   channel.join()
-    .receive("ok", resp => {console.log("Joined successfully!!", resp);})
+    .receive("ok", resp => {
+      console.log("Joined game server successfully", resp);
+      var event = new Event("initBoard");
+      event.board = resp.board;
+      window.dispatchEvent(event);
+    })
     .receive("error", resp => { console.log("Unable to join", resp) });
 
   channel.on("board_output", payload => {
